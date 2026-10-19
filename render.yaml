@@ -22,3 +22,4 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         value: lumi2026
+
