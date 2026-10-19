@@ -1,0 +1,24 @@
+databases:
+  - name: lumi-diary-db
+    databaseName: lumi_diary
+    user: lumi_user
+    plan: free
+
+services:
+  - type: web
+    name: lumi-gratitude-diary
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lumi-diary-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ADMIN_PASSWORD
+        value: lumi2026

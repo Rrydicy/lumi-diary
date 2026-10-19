@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>感恩星球｜Lumi 的每日心光日記</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- =====================================================================
+       1. 參與者登入畫面 (Login Overlay)
+       ===================================================================== -->
+  <div id="login-screen" class="fullscreen-overlay">
+    <div class="auth-card">
+      <div class="lumi-avatar-wrap large">
+        <svg class="lumi-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="lumiGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFF9EC" />
+              <stop offset="55%" stop-color="#F7D9C4" />
+              <stop offset="100%" stop-color="#E8B8B8" stop-opacity="0" />
+            </radialGradient>
+            <linearGradient id="lumiBody" x1="25" y1="25" x2="95" y2="95" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#FFFDF9" />
+              <stop offset="60%" stop-color="#F9E5D8" />
+              <stop offset="100%" stop-color="#ECC8C8" />
+            </linearGradient>
+          </defs>
+          <circle cx="60" cy="60" r="54" fill="url(#lumiGlow)" />
+          <path d="M60 22C80 22 94 37 94 58C94 79 80 94 60 94C40 94 26 79 26 58C26 37 40 22 60 22Z" fill="url(#lumiBody)" />
+          <!-- Starlight antenna -->
+          <path d="M60 10L63 18L71 21L63 24L60 32L57 24L49 21L57 18L60 10Z" fill="#E6B87D" />
+          <!-- Gentle eyes -->
+          <path d="M45 56C47 53 51 53 53 56" stroke="#6E5549" stroke-width="2.6" stroke-linecap="round" />
+          <path d="M67 56C69 53 73 53 75 56" stroke="#6E5549" stroke-width="2.6" stroke-linecap="round" />
+          <!-- Soft blush -->
+          <ellipse cx="43" cy="63" rx="5.5" ry="3.2" fill="#EBA8A8" fill-opacity="0.55" />
+          <ellipse cx="77" cy="63" rx="5.5" ry="3.2" fill="#EBA8A8" fill-opacity="0.55" />
+          <!-- Gentle smile -->
+          <path d="M55 64C57.5 67 62.5 67 65 64" stroke="#6E5549" stroke-width="2.3" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <p class="brand-badge">🌍 感恩星球</p>
+      <h1 class="auth-title">Lumi 的每日心光日記</h1>
+      <p class="auth-subtitle">
+        在這裡，每天留下一點屬於自己的溫柔時光。<br />
+        寫下日常的肯定與感謝，點亮一顆屬於今天的心光星星。
+      </p>
+
+      <form id="login-form" class="auth-form">
+        <label for="participant-name-input" class="input-label">請輸入你的名字或暱稱</label>
+        <input
+          type="text"
+          id="participant-name-input"
+          class="text-input"
+          placeholder="例如：小安、王小明..."
+          required
+          autocomplete="off"
+        />
+        <p class="privacy-note">
+          🔒 你的日記資料將獨立保存，其他參與者無法查看你的內容。系統會自動為你建立專屬研究編號。
+        </p>
+        <button type="submit" class="btn btn-primary btn-block">進入感恩星球 ✨</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       2. 首次使用：AI 回饋風格設定 (Onboarding Screen)
+       ===================================================================== -->
+  <div id="onboarding-screen" class="fullscreen-overlay hidden">
+    <div class="onboarding-card">
+      <div class="lumi-header-inline">
+        <div class="lumi-avatar-wrap medium">
+          <svg class="lumi-svg" viewBox="0 0 120 120" fill="none">
+            <circle cx="60" cy="60" r="52" fill="#F9E5D8" fill-opacity="0.65" />
+            <circle cx="60" cy="60" r="36" fill="#FFFDF9" stroke="#E8C5B8" stroke-width="2" />
+            <path d="M60 12L62.5 19L69.5 21.5L62.5 24L60 31L57.5 24L50.5 21.5L57.5 19L60 12Z" fill="#E6B87D" />
+            <path d="M46 57C48 54 52 54 54 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M66 57C68 54 72 54 74 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+            <ellipse cx="44" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+            <ellipse cx="76" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+            <path d="M55 64C57.5 66.5 62.5 66.5 65 64" stroke="#6E5549" stroke-width="2.2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div>
+          <span class="badge-tag">初次見面設定</span>
+          <h2>嗨，<span id="onboarding-user-name">朋友</span>！我是 Lumi ✨</h2>
+        </div>
+      </div>
+
+      <p class="onboarding-lead">
+        在未來的日子裡，每當你寫完一篇感恩日記，我都會在最後留下一段簡短的話陪伴你。<br />
+        <strong>「你希望 Lumi 用什麼樣的風格回應你呢？」</strong>
+      </p>
+
+      <div class="style-section">
+        <label class="input-label">1. 點選你喜歡的回應風格：</label>
+        <div class="style-grid" id="onboarding-preset-grid">
+          <button type="button" class="style-option-btn selected" data-style="🌷 溫柔陪伴">
+            <span class="style-title">🌷 溫柔陪伴</span>
+            <span class="style-desc">輕柔安定，像微光一樣靜靜接納與傾聽</span>
+          </button>
+          <button type="button" class="style-option-btn" data-style="✨ 活潑自然">
+            <span class="style-title">✨ 活潑自然</span>
+            <span class="style-desc">輕快有朝氣，帶著溫暖真誠的微笑感</span>
+          </button>
+          <button type="button" class="style-option-btn" data-style="🌿 簡短直接">
+            <span class="style-title">🌿 簡短直接</span>
+            <span class="style-desc">乾淨俐落不囉嗦，直接點出今日的紀錄重點</span>
+          </button>
+          <button type="button" class="style-option-btn" data-style="💬 像朋友一樣">
+            <span class="style-title">💬 像朋友一樣</span>
+            <span class="style-desc">自然親切，像熟識的好友一樣日常對話</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="style-section">
+        <label for="onboarding-custom-style" class="input-label">
+          2. 自由補充其他要求（選填，也可直接填寫你專屬的回應方式）：
+        </label>
+        <textarea
+          id="onboarding-custom-style"
+          class="textarea-input"
+          rows="3"
+          placeholder="例如：可以偶爾叫我的暱稱、語氣不要太正式、或是任何你喜歡的回應方式..."
+        ></textarea>
+        <p class="helper-text">💡 設定完成後，日後隨時可以在左側「⚙️ 設定」中修改，不需要每天重新設定。</p>
+      </div>
+
+      <button type="button" id="confirm-onboarding-btn" class="btn btn-primary btn-block">
+        確認回饋風格，進入我的日記 🌷
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       3. 主畫面：左側日曆與選單 + 右側主要內容區
+       ===================================================================== -->
+  <div id="app-shell" class="app-layout hidden">
+    <!-- 左側固定欄 -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo-dot">🌍</div>
+        <div class="brand-text">
+          <div class="brand-title">感恩星球</div>
+          <div class="brand-sub">Lumi 的每日心光日記</div>
+        </div>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-pill-info">
+          <span class="user-pill-name" id="sidebar-user-name">-</span>
+          <span class="user-pill-code" id="sidebar-user-code">P001</span>
+        </div>
+        <div class="user-pill-stars" title="累積點亮的心光星星">
+          ⭐ <span id="sidebar-star-count">0</span>
+        </div>
+      </div>
+
+      <!-- 左側當月日曆 -->
+      <div class="calendar-card">
+        <div class="calendar-header">
+          <button type="button" id="cal-prev-month" class="cal-nav-btn" aria-label="上個月">‹</button>
+          <div class="cal-month-title" id="cal-month-label">2026 年 10 月</div>
+          <button type="button" id="cal-next-month" class="cal-nav-btn" aria-label="下個月">›</button>
+        </div>
+        <div class="calendar-weekdays">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="calendar-grid" id="calendar-days-grid"></div>
+        <div class="calendar-legend">
+          <span class="legend-item"><span class="legend-today"></span>今天</span>
+          <span class="legend-item"><span class="legend-dot"></span>書寫中</span>
+          <span class="legend-item">⭐ 已完成</span>
+        </div>
+      </div>
+
+      <!-- 左側功能選單 -->
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-view="diary" id="nav-today-diary">
+          <span class="nav-icon">📖</span>
+          <span>今日日記</span>
+        </button>
+        <button type="button" class="nav-item" data-view="starry-sky" id="nav-starry-sky">
+          <span class="nav-icon">⭐</span>
+          <span>心光星空</span>
+        </button>
+        <button type="button" class="nav-item" data-view="history" id="nav-history">
+          <span class="nav-icon">📚</span>
+          <span>歷史日記</span>
+        </button>
+        <button type="button" class="nav-item" data-view="settings" id="nav-settings">
+          <span class="nav-icon">⚙️</span>
+          <span>設定</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" id="logout-btn" class="btn-link">切換參與者</button>
+      </div>
+    </aside>
+
+    <!-- 右側主要區域 -->
+    <main class="main-panel">
+      <!-- ===============================================================
+           VIEW A: 日記書寫與回顧區域 (Diary View)
+           =============================================================== -->
+      <section id="view-diary" class="content-view">
+        <!-- 頂部日期標示列 -->
+        <header class="diary-date-banner">
+          <div>
+            <span class="date-label-badge" id="selected-date-badge">今日心光</span>
+            <h2 class="selected-date-title" id="selected-date-heading">2026 年 10 月 20 日</h2>
+          </div>
+          <div id="diary-status-pill" class="status-pill status-empty">尚未書寫</div>
+        </header>
+
+        <!-- 子畫面 A1: 首頁右側待機畫面 -->
+        <div id="diary-stage-welcome" class="stage-card">
+          <div class="welcome-illustration">
+            <div class="lumi-avatar-wrap large">
+              <svg class="lumi-svg" viewBox="0 0 120 120" fill="none">
+                <circle cx="60" cy="60" r="52" fill="#F9E5D8" fill-opacity="0.6" />
+                <circle cx="60" cy="60" r="36" fill="#FFFDF9" stroke="#E8C5B8" stroke-width="2" />
+                <path d="M60 12L62.5 19L69.5 21.5L62.5 24L60 31L57.5 24L50.5 21.5L57.5 19L60 12Z" fill="#E6B87D" />
+                <path d="M46 57C48 54 52 54 54 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M66 57C68 54 72 54 74 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+                <ellipse cx="44" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+                <ellipse cx="76" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+                <path d="M55 64C57.5 66.5 62.5 66.5 65 64" stroke="#6E5549" stroke-width="2.2" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+          <h3 id="welcome-greeting-title" class="stage-title">給今天留下一段溫柔的紀錄吧</h3>
+          <p id="welcome-greeting-desc" class="stage-desc">
+            不需要長篇大論，只要順著五個簡單的小問題，記錄下今天生活裡的微光。Lumi 會在最後陪伴你一起回顧。
+          </p>
+          <div class="stage-actions-center">
+            <button type="button" id="start-diary-primary-btn" class="btn btn-primary btn-large">
+              開始今天的感恩日記 ✨
+            </button>
+          </div>
+        </div>
+
+        <!-- 子畫面 A2: 書寫前心情評分 -->
+        <div id="diary-stage-mood-before" class="stage-card hidden">
+          <div class="step-tag">Step 1 · 書寫前準備</div>
+          <h3 class="stage-title">書寫前心情評分</h3>
+          <p class="stage-question">「在開始今天的感恩日記之前，你會給現在的心情幾分呢？」</p>
+
+          <div class="mood-scale" id="mood-before-scale">
+            <button type="button" class="mood-btn" data-score="1">
+              <span class="mood-num">1 分</span>
+              <span class="mood-face">🌧️</span>
+              <span class="mood-label">非常不好</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="2">
+              <span class="mood-num">2 分</span>
+              <span class="mood-face">☁️</span>
+              <span class="mood-label">不太好</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="3">
+              <span class="mood-num">3 分</span>
+              <span class="mood-face">⛅</span>
+              <span class="mood-label">普通</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="4">
+              <span class="mood-num">4 分</span>
+              <span class="mood-face">🌤️</span>
+              <span class="mood-label">不錯</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="5">
+              <span class="mood-num">5 分</span>
+              <span class="mood-face">☀️</span>
+              <span class="mood-label">非常好</span>
+            </button>
+          </div>
+
+          <div class="stage-footer">
+            <button type="button" id="mood-before-back-btn" class="btn btn-ghost">返回</button>
+            <button type="button" id="mood-before-next-btn" class="btn btn-primary" disabled>
+              下一步：開始書寫 →
+            </button>
+          </div>
+        </div>
+
+        <!-- 子畫面 A3: 五題感恩日記逐題書寫 -->
+        <div id="diary-stage-questions" class="stage-card hidden">
+          <div class="progress-header">
+            <div class="progress-meta">
+              <span class="progress-step-text" id="question-step-label">第 1 題／共 5 題</span>
+              <span class="lumi-quiet-companion">
+                <span class="lumi-mini-dot"></span> Lumi 正安靜陪伴你書寫中
+              </span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="question-progress-bar" style="width: 20%;"></div>
+            </div>
+          </div>
+
+          <div class="question-box">
+            <span class="question-category-badge" id="question-category-badge">1. 一個肯定</span>
+            <h3 class="question-prompt-title" id="question-prompt-title">
+              今天有什麼事情是你想肯定或讚美自己的？
+            </h3>
+            <textarea
+              id="question-answer-input"
+              class="textarea-input diary-textarea"
+              rows="6"
+              placeholder="自在寫下你的想法，不論多小的事情都可以..."
+            ></textarea>
+          </div>
+
+          <div class="stage-footer question-footer">
+            <button type="button" id="question-prev-btn" class="btn btn-ghost">← 上一題</button>
+            <div class="question-right-actions">
+              <button type="button" id="question-skip-btn" class="btn btn-secondary">跳過這題</button>
+              <button type="button" id="question-submit-btn" class="btn btn-primary">送出回答 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 子畫面 A4: 書寫後心情評分 -->
+        <div id="diary-stage-mood-after" class="stage-card hidden">
+          <div class="step-tag">完成五題 · 最後一步評分</div>
+          <h3 class="stage-title">書寫後心情評分</h3>
+          <p class="stage-question">「今天的感恩日記已經寫完了，現在你會給此刻的心情幾分呢？」</p>
+
+          <div class="mood-scale" id="mood-after-scale">
+            <button type="button" class="mood-btn" data-score="1">
+              <span class="mood-num">1 分</span>
+              <span class="mood-face">🌧️</span>
+              <span class="mood-label">非常不好</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="2">
+              <span class="mood-num">2 分</span>
+              <span class="mood-face">☁️</span>
+              <span class="mood-label">不太好</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="3">
+              <span class="mood-num">3 分</span>
+              <span class="mood-face">⛅</span>
+              <span class="mood-label">普通</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="4">
+              <span class="mood-num">4 分</span>
+              <span class="mood-face">🌤️</span>
+              <span class="mood-label">不錯</span>
+            </button>
+            <button type="button" class="mood-btn" data-score="5">
+              <span class="mood-num">5 分</span>
+              <span class="mood-face">☀️</span>
+              <span class="mood-label">非常好</span>
+            </button>
+          </div>
+
+          <div class="stage-footer">
+            <button type="button" id="mood-after-back-btn" class="btn btn-ghost">← 返回查看第 5 題</button>
+            <button type="button" id="mood-after-submit-btn" class="btn btn-primary" disabled>
+              進入今日心光回顧 ✨
+            </button>
+          </div>
+        </div>
+
+        <!-- 子畫面 A5: 今日心光回顧 + Lumi 的今日整體回饋 + 點亮今日星星 -->
+        <div id="diary-stage-review" class="review-container hidden">
+          <div class="review-grid">
+            <!-- 左/主欄：今日心光回顧內容 -->
+            <div class="review-main-card">
+              <div class="review-card-header">
+                <div>
+                  <span class="step-tag">今日心光回顧</span>
+                  <h3 class="review-date-title" id="review-date-text">2026 年 10 月 20 日</h3>
+                </div>
+                <button type="button" id="review-edit-answers-btn" class="btn btn-ghost btn-sm">
+                  返回查看／修改回答
+                </button>
+              </div>
+
+              <!-- 書寫前後心情分數 -->
+              <div class="mood-summary-row">
+                <div class="mood-summary-item">
+                  <span class="mood-summary-label">書寫前心情分數</span>
+                  <strong class="mood-summary-val" id="review-mood-before">-</strong>
+                </div>
+                <div class="mood-summary-divider"></div>
+                <div class="mood-summary-item">
+                  <span class="mood-summary-label">書寫後心情分數</span>
+                  <strong class="mood-summary-val" id="review-mood-after">-</strong>
+                </div>
+              </div>
+
+              <!-- 五題回答列表 -->
+              <div class="review-answers-list">
+                <div class="review-answer-item">
+                  <div class="review-q-label">1. 今天的一個肯定</div>
+                  <div class="review-q-sub">今天有什麼事情是你想肯定或讚美自己的？</div>
+                  <div class="review-a-text" id="review-a1"></div>
+                </div>
+                <div class="review-answer-item">
+                  <div class="review-q-label">2. 第一個感恩</div>
+                  <div class="review-q-sub">今天第一件讓你想感謝的事情是什麼？</div>
+                  <div class="review-a-text" id="review-a2"></div>
+                </div>
+                <div class="review-answer-item">
+                  <div class="review-q-label">3. 第二個感恩</div>
+                  <div class="review-q-sub">今天第二件讓你想感謝的事情是什麼？</div>
+                  <div class="review-a-text" id="review-a3"></div>
+                </div>
+                <div class="review-answer-item">
+                  <div class="review-q-label">4. 第三個感恩：感謝自己</div>
+                  <div class="review-q-sub">今天你想感謝自己什麼？</div>
+                  <div class="review-a-text" id="review-a4"></div>
+                </div>
+                <div class="review-answer-item">
+                  <div class="review-q-label">5. 一個檢討</div>
+                  <div class="review-q-sub">回顧今天，有哪件事情是你希望下次可以做得更好的？</div>
+                  <div class="review-a-text" id="review-a5"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右/次欄：Lumi 的今日留言 + 點亮星星區塊 -->
+            <div class="review-side-column">
+              <!-- Lumi 的今日留言區塊 -->
+              <div class="lumi-feedback-card">
+                <div class="lumi-feedback-header">
+                  <div class="lumi-avatar-wrap small">
+                    <svg class="lumi-svg" viewBox="0 0 120 120" fill="none">
+                      <circle cx="60" cy="60" r="50" fill="#F9E5D8" />
+                      <circle cx="60" cy="60" r="36" fill="#FFFDF9" stroke="#E8C5B8" stroke-width="2" />
+                      <path d="M60 12L62.5 19L69.5 21.5L62.5 24L60 31L57.5 24L50.5 21.5L57.5 19L60 12Z" fill="#E6B87D" />
+                      <path d="M46 57C48 54 52 54 54 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+                      <path d="M66 57C68 54 72 54 74 57" stroke="#6E5549" stroke-width="2.5" stroke-linecap="round" />
+                      <ellipse cx="44" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+                      <ellipse cx="76" cy="63" rx="5" ry="3" fill="#EBA8A8" fill-opacity="0.55" />
+                      <path d="M55 64C57.5 66.5 62.5 66.5 65 64" stroke="#6E5549" stroke-width="2.2" stroke-linecap="round" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="lumi-card-title">Lumi 的今日留言</h4>
+                    <span class="lumi-style-badge" id="review-lumi-style-tag">🌷 溫柔陪伴</span>
+                  </div>
+                </div>
+                <div class="lumi-feedback-body" id="review-lumi-feedback">
+                  正在為你整理今日的心光回饋...
+                </div>
+              </div>
+
+              <!-- 點亮今日星星區塊 -->
+              <div class="star-lighting-card" id="star-unlit-box">
+                <div class="star-icon-preview">🌟</div>
+                <h4 class="star-card-title">今天的心光日記已經完成！</h4>
+                <p class="star-card-desc">
+                  謝謝你留下今天的生活紀錄。<br />
+                  現在，點亮一顆屬於今天的星星吧！
+                </p>
+                <button type="button" id="light-star-btn" class="btn btn-star btn-block">
+                  ⭐ 點亮今日星星
+                </button>
+              </div>
+
+              <!-- 已點亮星星成功畫面 -->
+              <div class="star-lighting-card star-lit-success hidden" id="star-lit-box">
+                <div class="star-icon-lit" id="star-anim-icon">⭐</div>
+                <h4 class="star-card-title">已點亮屬於今天的星星！</h4>
+                <p class="star-card-desc">
+                  這顆星星已經收藏進你的左側日曆與「心光星空」中。<br />
+                  謝謝你今天也溫柔地陪伴了自己。
+                </p>
+                <div class="star-lit-actions">
+                  <button type="button" id="go-starry-sky-btn" class="btn btn-secondary btn-sm">
+                    前往心光星空查看 ⭐
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW B: 心光星空 (Starry Sky View)
+           =============================================================== -->
+      <section id="view-starry-sky" class="content-view hidden">
+        <header class="section-header">
+          <div>
+            <span class="date-label-badge">累積的溫柔足跡</span>
+            <h2 class="selected-date-title">⭐ 心光星空</h2>
+          </div>
+        </header>
+
+        <div class="sky-stats-card">
+          <div class="sky-stat-main">
+            <span class="sky-stat-number" id="sky-total-stars">0</span>
+            <span class="sky-stat-unit">顆心光星星（累積完成日記篇數）</span>
+          </div>
+          <p class="sky-stat-note">
+            每一篇完成的感恩日記，都會在這裡化為一顆星星。不要求連續打卡，中斷幾天也不會扣除星星，照著自己的步調書寫就好。點選任一顆星星，即可回顧當天的日記與 Lumi 留言。
+          </p>
+        </div>
+
+        <div class="starry-canvas" id="starry-sky-grid">
+          <!-- 動態產生每顆星星卡片 -->
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW C: 歷史日記 (History View)
+           =============================================================== -->
+      <section id="view-history" class="content-view hidden">
+        <header class="section-header">
+          <div>
+            <span class="date-label-badge">過往紀錄一覽</span>
+            <h2 class="selected-date-title">📚 歷史日記</h2>
+          </div>
+        </header>
+
+        <div id="history-list-container" class="history-list">
+          <!-- 動態產生歷史日記卡片 -->
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW D: 設定 (Settings View)
+           =============================================================== -->
+      <section id="view-settings" class="content-view hidden">
+        <header class="section-header">
+          <div>
+            <span class="date-label-badge">個人化偏好</span>
+            <h2 class="selected-date-title">⚙️ 設定</h2>
+          </div>
+        </header>
+
+        <div class="stage-card">
+          <h3 class="stage-title">參與者資訊</h3>
+          <div class="info-kv-row">
+            <span>你的名稱／暱稱：</span>
+            <strong id="settings-user-name">-</strong>
+          </div>
+          <div class="info-kv-row">
+            <span>專屬研究編號：</span>
+            <strong id="settings-user-code">-</strong>
+          </div>
+
+          <hr class="soft-divider" />
+
+          <h3 class="stage-title">修改 Lumi 的 AI 回饋風格</h3>
+          <p class="stage-desc">修改後，之後新完成的感恩日記都會依照新的風格回應你。</p>
+
+          <div class="style-section">
+            <label class="input-label">預設回饋風格：</label>
+            <div class="style-grid" id="settings-preset-grid">
+              <button type="button" class="style-option-btn" data-style="🌷 溫柔陪伴">
+                <span class="style-title">🌷 溫柔陪伴</span>
+                <span class="style-desc">輕柔安定，像微光一樣靜靜接納與傾聽</span>
+              </button>
+              <button type="button" class="style-option-btn" data-style="✨ 活潑自然">
+                <span class="style-title">✨ 活潑自然</span>
+                <span class="style-desc">輕快有朝氣，帶著溫暖真誠的微笑感</span>
+              </button>
+              <button type="button" class="style-option-btn" data-style="🌿 簡短直接">
+                <span class="style-title">🌿 簡短直接</span>
+                <span class="style-desc">乾淨俐落不囉嗦，直接點出今日的紀錄重點</span>
+              </button>
+              <button type="button" class="style-option-btn" data-style="💬 像朋友一樣">
+                <span class="style-title">💬 像朋友一樣</span>
+                <span class="style-desc">自然親切，像熟識的好友一樣日常對話</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="style-section">
+            <label for="settings-custom-style" class="input-label">自由補充其他要求（選填）：</label>
+            <textarea
+              id="settings-custom-style"
+              class="textarea-input"
+              rows="3"
+              placeholder="自由輸入你喜歡的回應方式或補充說明..."
+            ></textarea>
+          </div>
+
+          <div class="stage-footer">
+            <span id="settings-save-msg" class="save-toast"></span>
+            <button type="button" id="save-settings-btn" class="btn btn-primary">
+              儲存風格設定
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- =====================================================================
+       4. 研究者後台 Modal (Researcher Admin Dashboard)
+       ===================================================================== -->
+  <div id="admin-modal" class="fullscreen-overlay hidden">
+    <div class="admin-panel-card">
+      <div class="admin-header">
+        <div>
+          <span class="badge-tag">Researcher Console</span>
+          <h2>🔬 《感恩星球》研究資料管理後台</h2>
+        </div>
+        <button type="button" id="close-admin-btn" class="btn btn-ghost">✕ 關閉後台</button>
+      </div>
+
+      <!-- 管理密碼驗證區 -->
+      <div id="admin-auth-box" class="admin-auth-section">
+        <label for="admin-password-input" class="input-label">請輸入研究者管理密碼</label>
+        <div class="inline-form">
+          <input
+            type="password"
+            id="admin-password-input"
+            class="text-input"
+            placeholder="請輸入密碼..."
+            autocomplete="off"
+          />
+          <button type="button" id="admin-login-btn" class="btn btn-primary">驗證並進入後台</button>
+        </div>
+        <p id="admin-auth-error" class="error-text"></p>
+      </div>
+
+      <!-- 驗證通過後的後台內容 -->
+      <div id="admin-dashboard-content" class="hidden">
+        <!-- 工具列與匯出 -->
+        <div class="admin-toolbar">
+          <div class="admin-kpi-group">
+            <div class="admin-kpi">
+              <span class="kpi-label">參與人數</span>
+              <strong id="admin-kpi-users">0</strong>
+            </div>
+            <div class="admin-kpi">
+              <span class="kpi-label">總日記紀錄數</span>
+              <strong id="admin-kpi-entries">0</strong>
+            </div>
+            <div class="admin-kpi">
+              <span class="kpi-label">已點亮星星數</span>
+              <strong id="admin-kpi-stars">0</strong>
+            </div>
+          </div>
+          <div class="admin-actions">
+            <button type="button" id="admin-refresh-btn" class="btn btn-secondary">🔄 重新整理</button>
+            <button type="button" id="admin-export-csv-btn" class="btn btn-primary">📥 匯出完整研究資料 (CSV / Excel)</button>
+          </div>
+        </div>
+
+        <!-- Gemini API Key 與後台密碼設定區 -->
+        <div class="admin-api-box">
+          <div class="admin-api-info">
+            <strong>🤖 Gemini AI 連線狀態：</strong>
+            <span id="admin-gemini-status" class="status-pill">檢查中</span>
+          </div>
+          <div class="inline-form">
+            <input
+              type="password"
+              id="admin-gemini-key-input"
+              class="text-input"
+              placeholder="在此貼上你的 Gemini API Key（AIza...）儲存後所有參與者即可直接使用"
+            />
+            <button type="button" id="admin-save-key-btn" class="btn btn-secondary">儲存 API Key</button>
+          </div>
+          <div class="inline-form" style="margin-top: 6px;">
+            <input
+              type="password"
+              id="admin-new-password-input"
+              class="text-input"
+              placeholder="若想更改後台管理密碼，請在此輸入新密碼..."
+            />
+            <button type="button" id="admin-save-password-btn" class="btn btn-secondary">修改後台密碼</button>
+          </div>
+        </div>
+
+        <!-- 參與者清單與研究編號管理 -->
+        <h3 class="admin-section-title">1. 參與者列表與研究編號管理（可直接修改研究編號）</h3>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>研究編號</th>
+                <th>參與者名稱</th>
+                <th>設定之 AI 回饋風格</th>
+                <th>已完成／總篇數</th>
+                <th>點亮星星</th>
+                <th>最後書寫日期</th>
+              </tr>
+            </thead>
+            <tbody id="admin-participants-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- 每日書寫紀錄與 AI 回饋明細 -->
+        <h3 class="admin-section-title">2. 每日書寫紀錄與 Lumi AI 回饋明細</h3>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>研究編號</th>
+                <th>名稱</th>
+                <th>日期</th>
+                <th>前／後心情</th>
+                <th>五題日記內容摘要</th>
+                <th>Lumi 整體 AI 回饋</th>
+                <th>狀態／星星</th>
+                <th>開始／完成時間</th>
+              </tr>
+            </thead>
+            <tbody id="admin-entries-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+
