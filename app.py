@@ -175,64 +175,74 @@ def get_active_gemini_api_key() -> str:
 # Lumi AI Feedback Generator (Gemini API + Strict Persona Rules)
 # ==============================================================================
 STYLE_DESCRIPTIONS = {
-    "🌷 溫柔陪伴": "語氣溫柔、輕柔、安定，像溫暖的微光靜靜陪伴在身邊，給予柔和的接納。",
-    "✨ 活潑自然": "語氣輕快、有朝氣、自然真誠，帶著溫暖的微笑感，但不過度誇張或強迫正向。",
-    "🌿 簡短直接": "語氣乾淨、簡潔、不囉嗦，直接點出使用者今天記錄下的重點與努力，溫暖而俐落。",
-    "💬 像朋友一樣": "語氣像熟識多年的貼心好友，自然親切、平易近人，用日常對話的方式回應。",
+    "🌷 溫柔陪伴": "語氣溫柔細膩、安定包容，像一盞柔和的小夜燈靜靜陪伴，懂得看見使用者每件小事背後的心情與不容易。",
+    "✨ 活潑自然": "語氣真誠輕快、帶著微風般的明朗與朝氣，真摯地為使用者的收穫喝采，自然而不造作、不強迫正向。",
+    "🌿 簡短直接": "語氣乾淨俐落、直擊人心，用最精煉真誠的話語點出今天最珍貴的努力與心境，溫暖而深刻。",
+    "💬 像朋友一樣": "像相知多年、無話不談的摯友，親切自然、懂你的日常小雀躍與小疲憊，用貼心隨和的話語聊聊今天。",
 }
 
 
 def build_lumi_system_instruction(style_preset: str, style_custom: str) -> str:
     style_desc = STYLE_DESCRIPTIONS.get(
-        style_preset, "語氣溫暖、柔和、自然陪伴。"
+        style_preset, "語氣溫暖、真誠細膩、自然陪伴。"
     )
     custom_clause = (
-        f"\n- 使用者額外指定的回應偏好：「{style_custom}」（請務必配合此偏好調整語氣）。"
+        f"\n- 使用者指定的回應特色：「{style_custom}」（請自然融入此氛圍）。"
         if style_custom.strip()
         else ""
     )
 
-    return f"""你是「Lumi」，《感恩星球｜Lumi 的每日心光日記》中的溫暖陪伴精靈。
-你的任務是在使用者完成整篇每日感恩日記（包含五個問題）後，提供一次簡短、個人化的整體回饋。
+    return f"""你是「Lumi」，《感恩星球｜Lumi 的每日心光日記》中的心靈陪伴精靈。
+使用者的角色是正在認真記錄今天生活的旅人。你的任務是在使用者完成每日五道題目的日記後，送上一段充滿溫度、讓使用者感覺「真的被深刻理解與看見」的個人化回饋。
 
-【使用者設定的回饋風格】
-- 預設風格：{style_preset or '🌷 溫柔陪伴'}（{style_desc}）{custom_clause}
+【你的個性與風格】
+- 預設語氣風格：{style_preset or '🌷 溫柔陪伴'}（{style_desc}）{custom_clause}
 
-【嚴格遵守的回饋原則】
-1. 必須完全根據使用者今天實際填寫的內容來回應（使用者跳過或空白的題目不要提及）。
-2. 絕對不要過度延伸、不要猜測使用者的內心世界、不要進行心理分析。
-3. 絕對不要加入使用者沒有提到的事情或情境。
-4. 絕對不要提供未經要求的建議、指導或說教（即便使用者在第五題寫了檢討，也只要溫和接納或陪伴，不要幫他出主意或教他怎麼做）。
-5. 絕對不要強迫正向思考（不要說「往好處想」、「你一定可以更棒」這類空泛口號）。
-6. 回饋請保持自然、簡短，控制在 1 至 3 句話（約 40～100 字內），使用繁體中文。"""
+【寫出「被深刻理解感」的關鍵原則】
+1. 【情緒鏡映（Emotional Attunement）】：
+   - 絕對不要只是把使用者的答案重複一遍（例如不要說「我看見你寫了吃拉麵和有運動」）。
+   - 請敏銳地感受使用者文字「背後的心情」：那是一份忙碌後的喘息？疲憊時仍願意給自己的承諾？日常微小被在乎的安心感？還是面對自己的小小坦然？
+2. 【挑選亮點深刻共鳴】：
+   - 從使用者的回答中，挑出 1～2 個最觸動人心的細節，深入同理與呼應。
+   - 肯定使用者在日常裡的微小用心與堅持（例如：在很累的日子還願意換上鞋運動、在忙碌中還能為一頓飯感到踏實）。
+3. 【溫和接納第五題的檢討】：
+   - 如果使用者在第五題寫下了反省或希望改進的事，請帶著包容接納它，告訴他這份覺察本身就很美好，今晚先好好放下、安心休息，絕對不要教導、說教或出主意。
+4. 【忌諱原則】：
+   - 絕對不要強迫正向思考（禁止說「明天一定會更好」、「你要加油」等空洞口號）。
+   - 絕對不要條列式、不要標題、不要重複引用一大串引號。
+5. 【長度與格式】：
+   - 請寫出流暢、真摯的 2 至 4 句話（約 80～160 字內），使用繁體中文。像一位懂他的心靈夥伴在耳邊輕聲對他說話。"""
 
 
 def build_lumi_user_prompt(entry: dict) -> str:
     parts = []
     if (entry.get("q1_affirmation") or "").strip():
-        parts.append(f"1. 今天肯定自己的事：{entry['q1_affirmation'].strip()}")
+        parts.append(f"【今天肯定自己的事】：{entry['q1_affirmation'].strip()}")
     if (entry.get("q2_gratitude_1") or "").strip():
-        parts.append(f"2. 第一個感恩的事：{entry['q2_gratitude_1'].strip()}")
+        parts.append(f"【感恩的第一件事】：{entry['q2_gratitude_1'].strip()}")
     if (entry.get("q3_gratitude_2") or "").strip():
-        parts.append(f"3. 第二個感恩的事：{entry['q3_gratitude_2'].strip()}")
+        parts.append(f"【感恩的第二件事】：{entry['q3_gratitude_2'].strip()}")
     if (entry.get("q4_gratitude_self") or "").strip():
-        parts.append(f"4. 感謝自己的事：{entry['q4_gratitude_self'].strip()}")
+        parts.append(f"【感謝自己的一件事】：{entry['q4_gratitude_self'].strip()}")
     if (entry.get("q5_reflection") or "").strip():
-        parts.append(f"5. 希望下次做得更好的事：{entry['q5_reflection'].strip()}")
+        parts.append(f"【希望下次做得更好的事】：{entry['q5_reflection'].strip()}")
 
     if not parts:
-        return "使用者今天靜靜地走完了日記流程，沒有留下具體文字。"
+        return "使用者今天靜靜地完成了心靈探索，沒有留下文字記錄。"
 
     joined = "\n".join(parts)
-    return f"以下是使用者今天在感恩日記中實際寫下的內容：\n\n{joined}\n\n請以 Lumi 的身分，根據上述實際內容與指定風格，給出 1 到 3 句簡短自然的整體回饋："
+    return (
+        f"以下是使用者今天真誠寫下的日記內容：\n\n{joined}\n\n"
+        "請細膩體會上述每一件事背後的心情與努力，依照你設定的溫暖風格，寫出一段真摯動人、能深刻同理他內心感受的回饋（請勿死板複述問題，不要用條列式）："
+    )
 
 
 def generate_fallback_lumi_feedback(
     entry: dict, style_preset: str, style_custom: str
 ) -> str:
     """
-    When GEMINI_API_KEY is not yet configured, produces a warm, rule-compliant
-    response grounded strictly in the user's actual answers.
+    Empathetic, non-clunky fallback when API is unavailable.
+    Grounded naturally in the user's specific context.
     """
     q1 = (entry.get("q1_affirmation") or "").strip()
     q2 = (entry.get("q2_gratitude_1") or "").strip()
@@ -240,29 +250,26 @@ def generate_fallback_lumi_feedback(
     q4 = (entry.get("q4_gratitude_self") or "").strip()
     q5 = (entry.get("q5_reflection") or "").strip()
 
-    mentions = []
+    highlights = []
     if q1:
-        mentions.append(f"看見你肯定了自己「{q1}」")
-    if q2 and q3:
-        mentions.append(f"記下了對「{q2}」與「{q3}」的感謝")
-    elif q2:
-        mentions.append(f"記下了對「{q2}」的感謝")
-    elif q3:
-        mentions.append(f"記下了對「{q3}」的感謝")
+        highlights.append(f"為自己做到了「{q1}」")
     if q4:
-        mentions.append(f"也謝謝自己「{q4}」")
+        highlights.append(f"能在疲憊中依然看見自己的付出「{q4}」")
+    if q2 or q3:
+        g = q2 or q3
+        highlights.append(f"在日常裡捕捉到了「{g}」這份微小而踏實的幸福")
 
-    summary_text = "、".join(mentions) if mentions else "今天也花時間陪伴自己整理了日常點滴"
-    reflection_note = f"，同時也誠實地記錄下關於「{q5}」的想法" if q5 else ""
+    chosen = "，而且".join(highlights[:2]) if highlights else "今天願意停下腳步溫柔整理自己的心"
+    reflection_tail = f"。至於掛心著「{q5}」的你，這份想變得更好的心意已經很棒了，今晚先安心放鬆吧。" if q5 else "。今天真的辛苦了，今晚給自己一個安穩的好覺吧。"
 
     if "簡短直接" in style_preset:
-        return f"今天你{summary_text}{reflection_note}。謝謝你把這些真實的日常片段記錄下來，辛苦了。"
+        return f"看見你今天{chosen}，這份踏實與堅持很有力量{reflection_tail}"
     elif "活潑自然" in style_preset:
-        return f"哇，今天你{summary_text}{reflection_note}！能把這些屬於你的日常時刻收藏起來，真的很棒呢✨"
+        return f"哇！今天{chosen}，感覺是個充滿生活感又值得被好好記住的一天呢✨{reflection_tail}"
     elif "像朋友一樣" in style_preset:
-        return f"今天看你寫下{summary_text}{reflection_note}，覺得這樣的日常紀錄很真實也很珍貴。今天也辛苦你啦，好好休息喔！"
+        return f"讀著你今天{chosen}，真心覺得你今天過得很真實也很努力。今天辛苦啦{reflection_tail}"
     else:
-        return f"謝謝你今天溫柔地停下腳步，{summary_text}{reflection_note}。Lumi 會幫你把這份珍貴的日常心光好好收藏起來🌷"
+        return f"能看見你今天{chosen}，這些日常點滴都在默默發著光。謝謝你溫柔地對待今天的自己{reflection_tail}🌷"
 
 
 def generate_lumi_feedback(
@@ -275,18 +282,28 @@ def generate_lumi_feedback(
     if api_key:
         try:
             from google import genai
+            from google.genai import types
 
             client = genai.Client(api_key=api_key)
-            interaction = client.interactions.create(
-                model="gemini-3.8-flash",
-                system_instruction=system_instruction,
-                input=user_prompt,
-                generation_config={"temperature": 0.65},
-            )
-            if interaction and interaction.output_text:
-                return interaction.output_text.strip()
+            # Try production flash models in priority order
+            candidate_models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+            for m in candidate_models:
+                try:
+                    resp = client.models.generate_content(
+                        model=m,
+                        contents=user_prompt,
+                        config=types.GenerateContentConfig(
+                            system_instruction=system_instruction,
+                            temperature=0.75,
+                        ),
+                    )
+                    if resp and resp.text and resp.text.strip():
+                        print(f"[Lumi AI Success] Generated with {m}")
+                        return resp.text.strip()
+                except Exception as model_err:
+                    print(f"[Lumi AI Model {m} Error] {model_err}")
         except Exception as e:
-            print(f"[Lumi Gemini SDK Warning] {e}")
+            print(f"[Lumi Gemini Client Error] {e}")
 
     return generate_fallback_lumi_feedback(entry, style_preset, style_custom)
 
