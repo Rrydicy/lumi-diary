@@ -285,8 +285,8 @@ def generate_lumi_feedback(
             from google.genai import types
 
             client = genai.Client(api_key=api_key)
-            # Try production flash models in priority order
-            candidate_models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+            # Try modern 2026 production flash models in priority order
+            candidate_models = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-latest"]
             for m in candidate_models:
                 try:
                     resp = client.models.generate_content(
@@ -497,7 +497,7 @@ def save_diary_step():
     generate_ai = bool(data.get("generate_feedback", False))
     force_regenerate = bool(data.get("force_regenerate", False))
 
-    if (generate_ai and not (entry.get("lumi_feedback") or "").strip()) or force_regenerate:
+    if generate_ai or force_regenerate:
         preset = p_row["ai_style_preset"] or "🌷 溫柔陪伴"
         custom = p_row["ai_style_custom"] or ""
         style_snapshot = preset if not custom else f"{preset}（補充：{custom}）"
